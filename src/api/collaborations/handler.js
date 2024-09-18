@@ -19,7 +19,7 @@ class CollaborationsHandler {
     await this._userService.verifyUserExist(userId)
     await this._playlistService.verifyPlaylistOwner(playlistId, credentialId)
 
-    const collaborationId = await this._collaborationsService.addCollaboration(playlistId, userId)
+    const collaborationId = await this._collaborationsService.addCollaboration(playlistId, credentialId)
 
     const response = h.response({
       status: 'success',
