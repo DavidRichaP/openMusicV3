@@ -32,6 +32,11 @@ const collaborations = require('./api/collaborations')
 const CollaborationsService = require('./services/postgres/CollabService')
 const collaborationsValidator = require('./validator/collabs')
 
+// Exports
+const _exports = require('./api/exports')
+const ProducerService = require('./services/rabbitMQ/ProducerService')
+const ExportsValidator = require('./validator/exports')
+
 // error and env
 const ClientError = require('./exceptions/ClientError')
 require('dotenv').config()
@@ -127,7 +132,7 @@ const init = async () => {
 			options: {
 				service:{ 
 					collaborationService,
-					// playlistservice & playlistsong here
+					playlistService,
 					validator: collaborationsValidator
 				}
 			}
@@ -146,9 +151,19 @@ const init = async () => {
 				},
 			},
 		},
+		{
+			plugin: _exports,
+			options: {
+				service: {
+					exportService: ProducerService,
+					playlist: playlistService
+				},
+				validator: ExportsValidator
+			},
+		},
 	])
 
-	server.ext('onPreResponse', (request, h) => {
+	await server.ext('onPreResponse', (request, h) => {
 
 		const { response } = request;
 
