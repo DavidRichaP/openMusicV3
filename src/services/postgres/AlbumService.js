@@ -78,6 +78,19 @@ class AlbumService {
 			throw new NotFoundError('Delete Failed. Id Not Found')
 		}
 	}
+
+	async editCoverByAlbumID(id, coverUrl) {
+		const updateAt = new Date().toISOString()
+		const query = {
+			text: 'UPDATE ALBUMS SET cover = $2, updated_at = $3 WHERE id=$1 RETURNING id',
+			value: [id, coverUrl, updateAt]
+		}
+		const result = await this._pool.query(query)
+		
+		if (!result.rowCount) {
+			throw new NotFoundError('Update Failed, Id not found')
+		}
+	}
 }
 
 module.exports = AlbumService
