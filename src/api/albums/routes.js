@@ -25,6 +25,19 @@ const AlbumRoutes = (handler) => [
         path: '/albums/{id}',
         handler: handler.deleteAlbumByIdHandler,
     },
+    {
+        method: 'POST',
+        path: '/albums/{id}/likes',
+        handler: handler.postLikeHandler,
+        options: {
+          auth: 'openmusicapp_jwt',
+        },
+      },
+      {
+        method: 'GET',
+        path: '/albums/{id}/likes',
+        handler: handler.getCountAlbumLikesHandler,
+      },
 ];
 
 module.exports = AlbumRoutes;
