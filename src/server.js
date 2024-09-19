@@ -1,6 +1,8 @@
 // hapi functionality
 const Hapi = require('@hapi/hapi')
 const Jwt = require('@hapi/jwt')
+const path = require('path')
+const Inert = require('@hapi/inert')
 
 // caching
 
@@ -24,6 +26,12 @@ const PlaylistService = require('./services/postgres/PlaylistService')
 const playlistValidator = require('./validator/playlist')
 const playlistSongValidator = require('./validator/playlistSongs')
 const playlists = require('./api/playlist')
+
+// uploads
+
+const uploads = require('./api/uploads')
+const StorageService = require('./services/storage/StorageService')
+const uploadsValidator = require('./validator/uploads')
 
 // auth
 const auth = require('./api/auth')
@@ -52,6 +60,7 @@ const init = async () => {
 	const authService = new AuthService()
 	const collaborationService = new CollaborationsService()
 	const playlistService = new PlaylistService(collaborationService)
+	const storageService = new StorageService(path.resolve(__dirname, 'api/uploads/file/images'))
 
 	const server = Hapi.server({
 		port: process.env.PORT,
@@ -88,6 +97,9 @@ const init = async () => {
 		{
 			plugin: Jwt,
 		},
+		{
+			plugin: Inert,
+		}
 	])
 
 	// jwt strat
@@ -154,6 +166,13 @@ const init = async () => {
 					playlistSong: playlistSongValidator,
 				},
 			},
+		},
+		{
+			plugin: uploads,
+			options: {
+				service: storageService,
+				validator: uploadsValidator
+			}
 		},
 		{
 			plugin: _exports,
