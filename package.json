@@ -1,6 +1,6 @@
 {
   "name": "openmusic",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "an open music player, now with authentication and collab",
   "main": "server.js",
   "scripts": {
