@@ -2,6 +2,10 @@
 const Hapi = require('@hapi/hapi')
 const Jwt = require('@hapi/jwt')
 
+// caching
+
+const CacheService = require('./services/redis/CacheService')
+
 // core functionality
 const albumService = require('./services/postgres/AlbumService')
 const musicService = require('./services/postgres/SongService')
