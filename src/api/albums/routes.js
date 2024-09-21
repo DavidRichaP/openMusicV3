@@ -30,7 +30,7 @@ const AlbumRoutes = (handler) => [
         path: '/albums/{id}/likes',
         handler: handler.postLikeHandler,
         options: {
-          auth: 'openmusicapp_jwt',
+          auth: 'openmusic_jwt',
         },
       },
       {
