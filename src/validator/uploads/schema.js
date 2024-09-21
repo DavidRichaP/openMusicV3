@@ -10,4 +10,4 @@ const ImageHeaderSchema = Joi.object({
     'image/webp').required()
 }).unknown()
 
-module.exports = ImageHeaderSchema
+module.exports = { ImageHeaderSchema }

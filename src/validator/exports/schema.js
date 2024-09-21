@@ -4,4 +4,4 @@ const ExportSongsPayloadSchema = Joi.object({
   targetEmail: Joi.string().email({ tlds: true}).required()
 })
 
-module.exports = ExportSongsPayloadSchema
+module.exports = { ExportSongsPayloadSchema }
