@@ -15,6 +15,7 @@ const songsValidator = require('../src/validator/songs')
 const albumValidator = require('../src/validator/album')
 const albums = require('./api/albums')
 const songs = require('./api/songs')
+const LikesService = require('./services/postgres/LikeService');
 
 // user
 const UserService = require('./services/postgres/UserService')
@@ -54,8 +55,10 @@ const ClientError = require('./exceptions/ClientError')
 require('dotenv').config()
 
 const init = async () => {
+	const cacheService = new CacheService();
 	const openMusicSongs = new musicService()
 	const openMusicAlbums = new albumService()
+	const likeService = new LikesService(cacheService);
 	const userService = new UserService()
 	const authService = new AuthService()
 	const collaborationService = new CollaborationsService()
@@ -126,6 +129,8 @@ const init = async () => {
 			options: {
 				service: {
 					album: openMusicAlbums,
+					user: userService,
+					like: likeService
 				},
 				validator: {
 					album: albumValidator,
@@ -170,7 +175,10 @@ const init = async () => {
 		{
 			plugin: uploads,
 			options: {
-				service: storageService,
+				service: {
+					storage: storageService,
+					album: openMusicAlbums
+				},
 				validator: uploadsValidator
 			}
 		},
@@ -187,20 +195,41 @@ const init = async () => {
 	])
 
 	await server.ext('onPreResponse', (request, h) => {
-
+		// mendapatkan konteks response dari request
 		const { response } = request;
-
+	
 		if (response instanceof ClientError) {
-			const newResponse = h.response({
-				status: 'fail',
-				message: response.message,
-			})
-			newResponse.code(response.statusCode);
-			return newResponse
+		  // membuat response baru dari response toolkit sesuai kebutuhan error handling
+		  console.log(response);
+		  return h.response({
+			status: 'fail',
+			message: response.message,
+		  }).code(response.statusCode);
 		}
-
-		return h.continue
-	})
+	
+		if (response instanceof Error) {
+		  // kondisi ini digunakan untuk menangkap error yang tidak secara manual di-throw
+		  const { statusCode, payload } = response.output;
+		  switch (statusCode) {
+			case 401:
+			  return h.response(payload).code(401);
+			case 404:
+			  return h.response(payload).code(404);
+			case 413:
+			  return h.response(payload).code(413);
+			default:
+			  console.log(response);
+			  return h.response({
+				status: 'error',
+				error: payload.error,
+				message: payload.message,
+			  }).code(500);
+		  }
+		}
+	
+		// jika bukan ClientError, lanjutkan dengan response sebelumnya (tanpa terintervensi)
+		return response.continue || response;
+	  });
 	
 	await server.start()
 	console.log(`Server berjalan pada ${server.info.uri}`)

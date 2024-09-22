@@ -1,7 +1,7 @@
 class ExportHandler {
   constructor(service, validator) {
     this._exportService = service.exportService
-    this._playlistService = service._playlistService
+    this._playlistService = service.playlist
     this._validator = validator
 
     this.postExportPlaylistHandler = this.postExportPlaylistHandler.bind(this)
