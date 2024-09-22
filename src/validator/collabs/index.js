@@ -1,5 +1,5 @@
 const InvariantError = require('../../exceptions/InvariantError')
-const collabPayloadSchema = require('./schema')
+const { collabPayloadSchema } = require('./schema')
 
 const collaborationsValidator = {
   validateCollaborationPayload: (payload) => {
