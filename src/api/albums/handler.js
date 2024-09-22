@@ -105,7 +105,7 @@ class AlbumHandler {
 	}
 
 	async getCountAlbumLikesHandler(request, h) {
-		const { id: albumId } = request.auth.credentials
+		const { id: albumId } = request.params
 		const result = await this._likesService.getCountLikesAlbumById(albumId)
 
 		const response = h.response({
