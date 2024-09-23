@@ -32,19 +32,20 @@ const AlbumRoutes = (handler) => [
         options: {
           auth: 'openmusic_jwt',
         },
-      },
-      {
+    },
+    {
         method: 'GET',
         path: '/albums/{id}/likes',
         handler: handler.getCountAlbumLikesHandler,
-      },
-      {
+    },
+    {
         method: 'DELETE',
         path: '/albums/{id}/likes',
         handler: handler.deleteAlbumLikesByAlbumIdHandler,
         options: {
           auth: 'openmusic_jwt',
-},
+        }
+    }
 ];
 
 module.exports = AlbumRoutes;
