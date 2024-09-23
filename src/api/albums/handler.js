@@ -123,6 +123,17 @@ class AlbumHandler {
 
 		return response
 	}
+
+	async deleteAlbumLikesByAlbumIdHandler(request) {
+		const { id: credentialId } = request.auth.credentials
+		await this._usersService.verifyUserExist(credentialId)
+		const { id } = request.params
+		await this._likesService.deleteLike(credentialId, id)
+		return {
+				status: 'success',
+				message: 'Album berhasil dihapus',
+		}
+}
 }
 
 module.exports = AlbumHandler
