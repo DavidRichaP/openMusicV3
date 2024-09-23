@@ -46,9 +46,13 @@ class LikeService {
       values: [userId, albumId],
     };
 
-    const result = await this._pool.query(query);
+    const result = await this._pool.query(query)
 
-    return result.rows.length;
+    if (result.rows.length) {
+      throw new InvariantError('Favorit sudah ada')
+    }
+
+    return result.rows.length
   }
 
   async getCountLikesAlbumById(albumId) {
